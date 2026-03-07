@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -186,21 +186,21 @@
 <body>
     <div class="container">
         <h1>🎨 AI Art Generator</h1>
-        <p class="subtitle">Pollinations.ai ile hayal gücünüzü görselleştirin</p>
+        <p class="subtitle">Turn your imagination into stunning visuals with Pollinations.ai</p>
 
         <div class="input-group">
-            <label for="prompt">Görsel Açıklaması (İngilizce önerilir)</label>
-            <input type="text" id="prompt" placeholder="Örn: a beautiful sunset over mountains, digital art" />
+            <label for="prompt">Image Description</label>
+            <input type="text" id="prompt" placeholder="e.g., a beautiful sunset over mountains, digital art" />
         </div>
 
         <div class="button-group">
-            <button id="generateBtn">🌸 Görsel Oluştur</button>
-            <button id="randomBtn">🎲 Rastgele Oluştur</button>
+            <button id="generateBtn">🌸 Generate Image</button>
+            <button id="randomBtn">🎲 Random Generate</button>
         </div>
 
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p>Görsel oluşturuluyor...</p>
+            <p>Generating image...</p>
         </div>
 
         <div class="image-container">
@@ -208,13 +208,13 @@
         </div>
 
         <div class="examples">
-            <h3>💡 Örnek Prompt'lar:</h3>
+            <h3>💡 Example Prompts:</h3>
             <ul>
-                <li onclick="setPrompt('a magical forest with glowing mushrooms, fantasy art')">🌲 Büyülü orman</li>
-                <li onclick="setPrompt('cyberpunk city at night with neon lights')">🌃 Cyberpunk şehir</li>
-                <li onclick="setPrompt('cute robot playing with butterflies, cartoon style')">🤖 Sevimli robot</li>
-                <li onclick="setPrompt('majestic dragon flying over castle, epic fantasy')">🐉 Ejderha ve kale</li>
-                <li onclick="setPrompt('astronaut floating in space with colorful nebula')">🚀 Astronot ve nebula</li>
+                <li onclick="setPrompt('a magical forest with glowing mushrooms, fantasy art')">🌲 Magical forest</li>
+                <li onclick="setPrompt('cyberpunk city at night with neon lights')">🌃 Cyberpunk city</li>
+                <li onclick="setPrompt('cute robot playing with butterflies, cartoon style')">🤖 Cute robot</li>
+                <li onclick="setPrompt('majestic dragon flying over castle, epic fantasy')">🐉 Dragon and castle</li>
+                <li onclick="setPrompt('astronaut floating in space with colorful nebula')">🚀 Astronaut in space</li>
             </ul>
         </div>
 
@@ -245,7 +245,7 @@
 
         function generateImage(prompt) {
             if (!prompt.trim()) {
-                alert('Lütfen bir açıklama girin!');
+                alert('Please enter a description!');
                 return;
             }
 
@@ -267,12 +267,12 @@
             };
             
             generatedImage.onerror = function() {
-                // Alternatif API dene
+                // Try alternative API
                 const altUrl = `https://pollinations.ai/p/${encodedPrompt}?width=1024&height=1024`;
                 generatedImage.src = altUrl;
                 
                 generatedImage.onerror = function() {
-                    alert('Görsel oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
+                    alert('An error occurred while generating the image. Please try again.');
                     loading.style.display = 'none';
                     generateBtn.disabled = false;
                     randomBtn.disabled = false;
