@@ -24,14 +24,6 @@ An AI-powered image generator web application using Pollinations.ai API.
 - JavaScript (Vanilla)
 - Pollinations.ai API
 
-## 🌐 Live Demo
-
-**Live App:** https://hostlan.github.io/pollinations-art-generator/
-
-This app is published on GitHub Pages:
-1. Upload repository to GitHub
-2. Go to Settings > Pages > Source: select main branch
-3. Your app will be live at `https://username.github.io/pollinations-art-generator`
 
 ## 📝 License
 
