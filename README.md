@@ -1,40 +1,42 @@
 # 🎨 AI Art Generator
 
-Pollinations.ai API kullanarak yapay zeka destekli görsel oluşturucu web uygulaması.
+An AI-powered image generator web application using Pollinations.ai API.
 
-## 🌟 Özellikler
+## 🌟 Features
 
-- 🎨 Metin açıklamalarından AI ile görsel oluşturma
-- 🎲 Rastgele sanat eseri oluşturma
-- 💡 Hazır örnek prompt'lar
-- 📱 Responsive tasarım
-- ⚡ Hızlı ve kullanımı kolay
+- 🎨 Generate images from text descriptions using AI
+- 🎲 Random art generation
+- 💡 Ready-to-use example prompts
+- 📱 Responsive design
+- ⚡ Fast and easy to use
 
-## 🚀 Kullanım
+## 🚀 Usage
 
-1. Tarayıcınızda `index.html` dosyasını açın
-2. Görsel açıklamanızı girin (İngilizce önerilir)
-3. "Görsel Oluştur" butonuna tıklayın
-4. AI tarafından oluşturulan görseli görün!
+1. Open `index.html` in your browser
+2. Enter your image description
+3. Click "Generate Image" button
+4. See the AI-generated artwork!
 
-## 💻 Teknolojiler
+## 💻 Technologies
 
 - HTML5
 - CSS3
 - JavaScript (Vanilla)
 - Pollinations.ai API
 
-## 🌐 Canlı Demo
+## 🌐 Live Demo
 
-Bu uygulama GitHub Pages üzerinden yayınlanabilir:
-1. Repository'yi GitHub'a yükleyin
-2. Settings > Pages > Source: main branch seçin
-3. Uygulamanız `https://kullaniciadi.github.io/pollinations-art-generator` adresinde yayına girecektir
+**Live App:** https://hostlan.github.io/pollinations-art-generator/
 
-## 📝 Lisans
+This app is published on GitHub Pages:
+1. Upload repository to GitHub
+2. Go to Settings > Pages > Source: select main branch
+3. Your app will be live at `https://username.github.io/pollinations-art-generator`
 
-MIT License - İstediğiniz gibi kullanabilirsiniz!
+## 📝 License
 
-## 🙏 Teşekkürler
+MIT License - Feel free to use it!
 
-- [Pollinations.ai](https://pollinations.ai) - Ücretsiz AI görsel API'si için
+## 🙏 Credits
+
+- [Pollinations.ai](https://pollinations.ai) - For the free AI image generation API
