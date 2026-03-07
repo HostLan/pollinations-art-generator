@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Art Generator - Pollinations.ai</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #randomBtn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .image-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        #generatedImage {
+            max-width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .examples {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+
+        .examples h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .examples ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .examples li {
+            padding: 8px 0;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .examples li:hover {
+            color: #667eea;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 AI Art Generator</h1>
+        <p class="subtitle">Pollinations.ai ile hayal gücünüzü görselleştirin</p>
+
+        <div class="input-group">
+            <label for="prompt">Görsel Açıklaması (İngilizce önerilir)</label>
+            <input type="text" id="prompt" placeholder="Örn: a beautiful sunset over mountains, digital art" />
+        </div>
+
+        <div class="button-group">
+            <button id="generateBtn">🌸 Görsel Oluştur</button>
+            <button id="randomBtn">🎲 Rastgele Oluştur</button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Görsel oluşturuluyor...</p>
+        </div>
+
+        <div class="image-container">
+            <img id="generatedImage" alt="Generated Art" />
+        </div>
+
+        <div class="examples">
+            <h3>💡 Örnek Prompt'lar:</h3>
+            <ul>
+                <li onclick="setPrompt('a magical forest with glowing mushrooms, fantasy art')">🌲 Büyülü orman</li>
+                <li onclick="setPrompt('cyberpunk city at night with neon lights')">🌃 Cyberpunk şehir</li>
+                <li onclick="setPrompt('cute robot playing with butterflies, cartoon style')">🤖 Sevimli robot</li>
+                <li onclick="setPrompt('majestic dragon flying over castle, epic fantasy')">🐉 Ejderha ve kale</li>
+                <li onclick="setPrompt('astronaut floating in space with colorful nebula')">🚀 Astronot ve nebula</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            Powered by <a href="https://pollinations.ai" target="_blank">Pollinations.ai</a>
+        </div>
+    </div>
+
+    <script>
+        const promptInput = document.getElementById('prompt');
+        const generateBtn = document.getElementById('generateBtn');
+        const randomBtn = document.getElementById('randomBtn');
+        const loading = document.getElementById('loading');
+        const generatedImage = document.getElementById('generatedImage');
+
+        const randomPrompts = [
+            'a serene japanese garden with cherry blossoms',
+            'steampunk airship floating through clouds',
+            'underwater city with bioluminescent creatures',
+            'ancient library filled with magical books',
+            'phoenix rising from flames, dramatic lighting',
+            'crystal cave with rainbow reflections',
+            'samurai warrior in moonlight, anime style',
+            'futuristic sports car in neon city',
+            'mystical portal to another dimension',
+            'cozy cottage in snowy mountains at sunset'
+        ];
+
+        function generateImage(prompt) {
+            if (!prompt.trim()) {
+                alert('Lütfen bir açıklama girin!');
+                return;
+            }
+
+            loading.style.display = 'block';
+            generatedImage.style.display = 'none';
+            generateBtn.disabled = true;
+            randomBtn.disabled = true;
+
+            const encodedPrompt = encodeURIComponent(prompt);
+            const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true`;
+
+            const img = new Image();
+            img.onload = function() {
+                generatedImage.src = imageUrl;
+                generatedImage.style.display = 'block';
+                loading.style.display = 'none';
+                generateBtn.disabled = false;
+                randomBtn.disabled = false;
+            };
+            img.onerror = function() {
+                alert('Görsel oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
+                loading.style.display = 'none';
+                generateBtn.disabled = false;
+                randomBtn.disabled = false;
+            };
+            img.src = imageUrl;
+        }
+
+        function setPrompt(prompt) {
+            promptInput.value = prompt;
+            generateImage(prompt);
+        }
+
+        generateBtn.addEventListener('click', () => {
+            generateImage(promptInput.value);
+        });
+
+        randomBtn.addEventListener('click', () => {
+            const randomPrompt = randomPrompts[Math.floor(Math.random() * randomPrompts.length)];
+            promptInput.value = randomPrompt;
+            generateImage(randomPrompt);
+        });
+
+        promptInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                generateImage(promptInput.value);
+            }
+        });
+    </script>
+</body>
+</html>
