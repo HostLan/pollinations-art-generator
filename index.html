@@ -255,23 +255,31 @@
             randomBtn.disabled = true;
 
             const encodedPrompt = encodeURIComponent(prompt);
-            const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true`;
+            const timestamp = new Date().getTime();
+            const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true&seed=${timestamp}`;
 
-            const img = new Image();
-            img.onload = function() {
-                generatedImage.src = imageUrl;
+            // Doğrudan img src'ye atayarak göster
+            generatedImage.onload = function() {
+                loading.style.display = 'none';
                 generatedImage.style.display = 'block';
-                loading.style.display = 'none';
                 generateBtn.disabled = false;
                 randomBtn.disabled = false;
             };
-            img.onerror = function() {
-                alert('Görsel oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
-                loading.style.display = 'none';
-                generateBtn.disabled = false;
-                randomBtn.disabled = false;
+            
+            generatedImage.onerror = function() {
+                // Alternatif API dene
+                const altUrl = `https://pollinations.ai/p/${encodedPrompt}?width=1024&height=1024`;
+                generatedImage.src = altUrl;
+                
+                generatedImage.onerror = function() {
+                    alert('Görsel oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
+                    loading.style.display = 'none';
+                    generateBtn.disabled = false;
+                    randomBtn.disabled = false;
+                };
             };
-            img.src = imageUrl;
+            
+            generatedImage.src = imageUrl;
         }
 
         function setPrompt(prompt) {
