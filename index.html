@@ -256,30 +256,43 @@
 
             const encodedPrompt = encodeURIComponent(prompt);
             const timestamp = new Date().getTime();
-            const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true&seed=${timestamp}`;
-
-            // Doğrudan img src'ye atayarak göster
-            generatedImage.onload = function() {
-                loading.style.display = 'none';
-                generatedImage.style.display = 'block';
-                generateBtn.disabled = false;
-                randomBtn.disabled = false;
-            };
             
-            generatedImage.onerror = function() {
-                // Try alternative API
-                const altUrl = `https://pollinations.ai/p/${encodedPrompt}?width=1024&height=1024`;
-                generatedImage.src = altUrl;
-                
-                generatedImage.onerror = function() {
-                    alert('An error occurred while generating the image. Please try again.');
+            // Try multiple APIs in order
+            const apis = [
+                `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true&seed=${timestamp}`,
+                `https://pollinations.ai/p/${encodedPrompt}`,
+                `https://image.pollinations.ai/prompt/${encodedPrompt}`,
+            ];
+            
+            let currentApiIndex = 0;
+            
+            function tryNextApi() {
+                if (currentApiIndex >= apis.length) {
+                    alert('An error occurred while generating the image. Please try again later.');
                     loading.style.display = 'none';
                     generateBtn.disabled = false;
                     randomBtn.disabled = false;
+                    return;
+                }
+                
+                const imageUrl = apis[currentApiIndex];
+                currentApiIndex++;
+                
+                generatedImage.onload = function() {
+                    loading.style.display = 'none';
+                    generatedImage.style.display = 'block';
+                    generateBtn.disabled = false;
+                    randomBtn.disabled = false;
                 };
-            };
+                
+                generatedImage.onerror = function() {
+                    setTimeout(tryNextApi, 500);
+                };
+                
+                generatedImage.src = imageUrl;
+            }
             
-            generatedImage.src = imageUrl;
+            tryNextApi();
         }
 
         function setPrompt(prompt) {
