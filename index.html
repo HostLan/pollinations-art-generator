@@ -257,42 +257,34 @@
             const encodedPrompt = encodeURIComponent(prompt);
             const timestamp = new Date().getTime();
             
-            // Try multiple APIs in order
-            const apis = [
-                `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true&seed=${timestamp}`,
-                `https://pollinations.ai/p/${encodedPrompt}`,
-                `https://image.pollinations.ai/prompt/${encodedPrompt}`,
-            ];
+            // Using simple pollinations.ai endpoint
+            const imageUrl = `https://pollinations.ai/p/${encodedPrompt}?width=1024&height=1024&seed=${timestamp}`;
             
-            let currentApiIndex = 0;
+            // Add timeout for loading
+            const timeout = setTimeout(() => {
+                alert('Image generation is taking too long. Please try again.');
+                loading.style.display = 'none';
+                generateBtn.disabled = false;
+                randomBtn.disabled = false;
+            }, 30000); // 30 second timeout
             
-            function tryNextApi() {
-                if (currentApiIndex >= apis.length) {
-                    alert('An error occurred while generating the image. Please try again later.');
-                    loading.style.display = 'none';
-                    generateBtn.disabled = false;
-                    randomBtn.disabled = false;
-                    return;
-                }
-                
-                const imageUrl = apis[currentApiIndex];
-                currentApiIndex++;
-                
-                generatedImage.onload = function() {
-                    loading.style.display = 'none';
-                    generatedImage.style.display = 'block';
-                    generateBtn.disabled = false;
-                    randomBtn.disabled = false;
-                };
-                
-                generatedImage.onerror = function() {
-                    setTimeout(tryNextApi, 500);
-                };
-                
-                generatedImage.src = imageUrl;
-            }
+            generatedImage.onload = function() {
+                clearTimeout(timeout);
+                loading.style.display = 'none';
+                generatedImage.style.display = 'block';
+                generateBtn.disabled = false;
+                randomBtn.disabled = false;
+            };
             
-            tryNextApi();
+            generatedImage.onerror = function() {
+                clearTimeout(timeout);
+                alert('An error occurred while generating the image. The Pollinations.ai API may be temporarily unavailable. Please try again later.');
+                loading.style.display = 'none';
+                generateBtn.disabled = false;
+                randomBtn.disabled = false;
+            };
+            
+            generatedImage.src = imageUrl;
         }
 
         function setPrompt(prompt) {
