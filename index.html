@@ -325,7 +325,7 @@
 
             // Using simple pollinations.ai endpoint
             const apiKey = apiKeyInput.value.trim();
-            let imageUrl = `https://pollinations.ai/p/${encodedPrompt}?width=1024&height=1024&seed=${timestamp}`;
+            let imageUrl = `https://gen.pollinations.ai/image/${encodedPrompt}?width=1024&height=1024&seed=${timestamp}`;
             if (apiKey) {
                 imageUrl += `&token=${encodeURIComponent(apiKey)}`;
             }
