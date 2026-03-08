@@ -257,8 +257,8 @@
             const encodedPrompt = encodeURIComponent(prompt);
             const timestamp = new Date().getTime();
             
-            // Using simple pollinations.ai endpoint
-            const imageUrl = `https://pollinations.ai/p/${encodedPrompt}?width=1024&height=1024&seed=${timestamp}`;
+            // Using the correct Pollinations.ai image generation endpoint
+            const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&seed=${timestamp}&nologo=true`;
             
             // Add timeout for loading
             const timeout = setTimeout(() => {
@@ -266,7 +266,7 @@
                 loading.style.display = 'none';
                 generateBtn.disabled = false;
                 randomBtn.disabled = false;
-            }, 30000); // 30 second timeout
+            }, 60000); // 60 second timeout
             
             generatedImage.onload = function() {
                 clearTimeout(timeout);
