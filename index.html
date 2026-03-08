@@ -4,39 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pollinations Art Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <h1>Pollinations Art Generator</h1>
+        <button id="generateButton">Generate Image</button>
+        <div id="loading"></div>
+        <div id="error"></div>
+    </div>
     <script>
-        async function generateImage() {
-            const endpoints = [
-                'https://api.pollinations.ai/v1/generate',
-                'https://alternative-endpoint-1.com/api/generate',
-                'https://alternative-endpoint-2.com/api/generate'
+        async function generateImage(encodedPrompt) {
+            const generatedImage = new Image();
+            generatedImage.crossOrigin = 'anonymous';
+            const baseUrls = [
+                'https://pollinations.ai/p/',
+                'https://image.pollinations.ai/prompt/',
+                'https://pollinations.ai/prompt/'
             ];
-            let retries = 5;
-            let lastErrorMessage = '';
+            const width = 512; // Set desired width
+            const height = 512; // Set desired height
+            const seed = Math.floor(Math.random() * 10000); // Example seed generation
+            const candidates = baseUrls.map(base => `${base}${encodedPrompt}?width=${width}&height=${height}&seed=${seed}`);
 
-            for (const endpoint of endpoints) {
-                for (let attempt = 0; attempt < retries; attempt++) {
+            for (const candidate of candidates) {
+                let attempts = 0;
+                let success = false;
+                while (attempts < 3 && !success) {
                     try {
-                        const response = await fetch(endpoint); // Replace this with actual request parameters as needed
-                        if (!response.ok) throw new Error('Server responded with error');
-                        const data = await response.json();
-                        document.getElementById('image').src = data.imageUrl;
-                        return;
-                    } catch (err) {
-                        lastErrorMessage = err.message;
-                        const waitTime = Math.pow(2, attempt) * 1000; // Exponential backoff
-                        await new Promise(resolve => setTimeout(resolve, waitTime));
+                        const response = await fetch(candidate);
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        const blob = await response.blob();
+                        generatedImage.src = URL.createObjectURL(blob);
+                        generatedImage.onload = () => {
+                            document.getElementById('loading').appendChild(generatedImage);
+                            document.getElementById('error').innerText = '';
+                        };
+                        success = true;
+                    } catch (error) {
+                        attempts++;
+                        if (attempts < 3) {
+                            // Exponential backoff
+                            await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempts) * 1000));
+                        } else {
+                            document.getElementById('error').innerText = 'Failed to load image after multiple attempts.';
+                        }
                     }
                 }
             }
-            document.getElementById('error').innerText = 'Failed to generate image: ' + lastErrorMessage;
         }
+
+        document.getElementById('generateButton').onclick = () => {
+            const encodedPrompt = encodeURIComponent('your-prompt'); // Modify as needed
+            generateImage(encodedPrompt);
+        };
     </script>
-</head>
-<body>
-    <h1>Pollinations Art Generator</h1>
-    <button onclick="generateImage()">Generate Image</button>
-    <img id="image" crossOrigin='anonymous' alt="Generated Art" />
-    <div id="error" style="color: red;"></div>
 </body>
 </html>
