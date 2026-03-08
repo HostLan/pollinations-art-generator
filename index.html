@@ -8,54 +8,77 @@
 </head>
 <body>
     <div id="app">
-        <h1>Pollinations Art Generator</h1>
-        <button id="generateButton">Generate Image</button>
-        <div id="loading"></div>
+        <h1><span aria-hidden="true">🎨</span> Pollinations Art Generator</h1>
+        <div id="inputArea">
+            <label for="promptInput" class="sr-only">Image prompt</label>
+            <textarea id="promptInput" placeholder="Describe the image you want to generate..." rows="3"></textarea>
+            <button id="generateButton">Generate Image</button>
+        </div>
+        <div id="loading" class="hidden">Loading...</div>
         <div id="error"></div>
+        <div id="imageContainer"></div>
     </div>
     <script>
         async function generateImage(encodedPrompt) {
-            const generatedImage = new Image();
-            generatedImage.crossOrigin = 'anonymous';
-            const baseUrls = [
-                'https://pollinations.ai/p/',
-                'https://image.pollinations.ai/prompt/',
-                'https://pollinations.ai/prompt/'
-            ];
-            const width = 512; // Set desired width
-            const height = 512; // Set desired height
-            const seed = Math.floor(Math.random() * 10000); // Example seed generation
-            const candidates = baseUrls.map(base => `${base}${encodedPrompt}?width=${width}&height=${height}&seed=${seed}`);
+            const errorEl = document.getElementById('error');
+            const loadingEl = document.getElementById('loading');
+            const containerEl = document.getElementById('imageContainer');
 
-            for (const candidate of candidates) {
-                let attempts = 0;
-                let success = false;
-                while (attempts < 3 && !success) {
-                    try {
-                        const response = await fetch(candidate);
-                        if (!response.ok) throw new Error('Network response was not ok');
-                        const blob = await response.blob();
-                        generatedImage.src = URL.createObjectURL(blob);
-                        generatedImage.onload = () => {
-                            document.getElementById('loading').appendChild(generatedImage);
-                            document.getElementById('error').innerText = '';
-                        };
-                        success = true;
-                    } catch (error) {
-                        attempts++;
-                        if (attempts < 3) {
-                            // Exponential backoff
-                            await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempts) * 1000));
-                        } else {
-                            document.getElementById('error').innerText = 'Failed to load image after multiple attempts.';
-                        }
+            // Revoke previous object URL to avoid memory leaks
+            const prevImg = containerEl.querySelector('img');
+            if (prevImg && prevImg.src.startsWith('blob:')) {
+                URL.revokeObjectURL(prevImg.src);
+            }
+
+            // Clear previous results
+            errorEl.innerText = '';
+            containerEl.innerHTML = '';
+            loadingEl.classList.remove('hidden');
+
+            const baseUrl = 'https://image.pollinations.ai/prompt/';
+            const WIDTH = 512;
+            const HEIGHT = 512;
+            const seed = Math.floor(Math.random() * 10000);
+            const url = `${baseUrl}${encodedPrompt}?width=${WIDTH}&height=${HEIGHT}&seed=${seed}&nologo=true`;
+
+            let attempts = 0;
+            let success = false;
+
+            while (attempts < 3 && !success) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    const blob = await response.blob();
+                    const generatedImage = new Image();
+                    generatedImage.crossOrigin = 'anonymous';
+                    generatedImage.alt = 'Generated image';
+                    generatedImage.src = URL.createObjectURL(blob);
+                    generatedImage.onload = () => {
+                        loadingEl.classList.add('hidden');
+                        containerEl.appendChild(generatedImage);
+                    };
+                    success = true;
+                } catch (error) {
+                    attempts++;
+                    if (attempts < 3) {
+                        // Exponential backoff
+                        await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempts) * 1000));
+                    } else {
+                        loadingEl.classList.add('hidden');
+                        errorEl.innerText = 'Failed to load image after multiple attempts. Please try again.';
                     }
                 }
             }
         }
 
         document.getElementById('generateButton').onclick = () => {
-            const encodedPrompt = encodeURIComponent('your-prompt'); // Modify as needed
+            const prompt = document.getElementById('promptInput').value.trim();
+            if (!prompt) {
+                document.getElementById('error').innerText = 'Please enter a prompt before generating.';
+                return;
+            }
+            document.getElementById('error').innerText = '';
+            const encodedPrompt = encodeURIComponent(prompt);
             generateImage(encodedPrompt);
         };
     </script>
