@@ -55,7 +55,8 @@
             font-weight: 600;
         }
 
-        input[type="text"] {
+        input[type="text"],
+        input[type="password"] {
             width: 100%;
             padding: 15px;
             border: 2px solid #e0e0e0;
@@ -64,7 +65,8 @@
             transition: border-color 0.3s;
         }
 
-        input[type="text"]:focus {
+        input[type="text"]:focus,
+        input[type="password"]:focus {
             outline: none;
             border-color: #667eea;
         }
@@ -217,6 +219,11 @@
             <input type="text" id="prompt" placeholder="e.g., a beautiful sunset over mountains, digital art" />
         </div>
 
+        <div class="input-group">
+            <label for="apiKey">API Key <span style="font-weight:400;color:#999;font-size:0.9em;">(optional)</span></label>
+            <input type="password" id="apiKey" placeholder="Enter your Pollinations.ai API key (optional)" />
+        </div>
+
         <div class="button-group">
             <button id="generateBtn">🌸 Generate Image</button>
             <button id="randomBtn">🎲 Random Generate</button>
@@ -246,12 +253,13 @@
         </div>
 
         <div class="footer">
-            Powered by <a href="https://pollinations.ai" target="_blank">Pollinations.ai</a> &mdash; v2.0
+            Powered by <a href="https://pollinations.ai" target="_blank">Pollinations.ai</a> &mdash; v2.1
         </div>
     </div>
 
     <script>
         const promptInput = document.getElementById('prompt');
+        const apiKeyInput = document.getElementById('apiKey');
         const generateBtn = document.getElementById('generateBtn');
         const randomBtn = document.getElementById('randomBtn');
         const loading = document.getElementById('loading');
@@ -316,7 +324,11 @@
             const timestamp = new Date().getTime();
 
             // Using simple pollinations.ai endpoint
-            const imageUrl = `https://pollinations.ai/p/${encodedPrompt}?width=1024&height=1024&seed=${timestamp}`;
+            const apiKey = apiKeyInput.value.trim();
+            let imageUrl = `https://pollinations.ai/p/${encodedPrompt}?width=1024&height=1024&seed=${timestamp}`;
+            if (apiKey) {
+                imageUrl += `&token=${encodeURIComponent(apiKey)}`;
+            }
 
             if (attempt === 1) {
                 loadingText.textContent = 'Generating image...';
