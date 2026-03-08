@@ -1,6 +1,6 @@
 # 🎨 AI Art Generator
 
-An AI-powered image generator web application using Pollinations.ai API.
+**Version 2.1** — An AI-powered image generator web application using Pollinations.ai API.
 
 ## 🌟 Features
 
@@ -9,6 +9,9 @@ An AI-powered image generator web application using Pollinations.ai API.
 - 💡 Ready-to-use example prompts
 - 📱 Responsive design
 - ⚡ Fast and easy to use
+- 🔄 Automatic retry logic (up to 3 attempts on failure)
+- ⚠️ Inline error and warning messages (no blocking popups)
+- ⏱️ 30-second timeout with automatic retry
 
 ## 🚀 Usage
 
@@ -24,6 +27,23 @@ An AI-powered image generator web application using Pollinations.ai API.
 - JavaScript (Vanilla)
 - Pollinations.ai API
 
+## 📋 Changelog
+
+### v2.1
+- Fixed image generation: switched API endpoint from `pollinations.ai/p/` to `gen.pollinations.ai/image/` with `model=flux` parameter
+
+### v2.0
+- Added automatic retry logic — retries up to 3 times on API failure or timeout
+- Replaced blocking `alert()` dialogs with styled inline warning and error banners
+- Added loading text that updates to reflect retry state (e.g. "Retrying... (attempt 2 of 3)")
+- Added stale callback guard to prevent race conditions across retry cycles
+- Added 30-second per-attempt timeout with automatic retry
+
+### v1.0
+- Initial release
+- Basic image generation from text prompts
+- Random prompt generation
+- Example prompts panel
 
 ## 📝 License
 
