@@ -1,0 +1,121 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e0e0e0;
+}
+
+#app {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 600px;
+    width: 90%;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #e2b96f;
+}
+
+#inputArea {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+#promptInput {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    color: #e0e0e0;
+    font-size: 1rem;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+#promptInput:focus {
+    border-color: #e2b96f;
+}
+
+#promptInput::placeholder {
+    color: rgba(224, 224, 224, 0.5);
+}
+
+#generateButton {
+    padding: 0.75rem 1.5rem;
+    background: #e2b96f;
+    color: #1a1a2e;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+#generateButton:hover {
+    background: #f0cd90;
+}
+
+#generateButton:active {
+    transform: scale(0.97);
+}
+
+#loading {
+    font-size: 1rem;
+    color: #e2b96f;
+    margin-bottom: 1rem;
+}
+
+#loading.hidden {
+    display: none;
+}
+
+#error {
+    color: #ff6b6b;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    min-height: 1.2em;
+}
+
+#imageContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+#imageContainer img {
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
