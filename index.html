@@ -325,7 +325,7 @@
 
             // Using the official Pollinations.ai image generation endpoint
             const apiKey = apiKeyInput.value.trim();
-            let imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&seed=${timestamp}&nologo=true`;
+            let imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&seed=${timestamp}&model=flux&nologo=true`;
             if (apiKey) {
                 imageUrl += `&token=${encodeURIComponent(apiKey)}`;
             }
