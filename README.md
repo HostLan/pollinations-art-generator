@@ -1,6 +1,6 @@
 # 🎨 AI Art Generator
 
-**Version 2.0** — An AI-powered image generator web application using Pollinations.ai API.
+**Version 2.1** — An AI-powered image generator web application using Pollinations.ai API.
 
 ## 🌟 Features
 
@@ -28,6 +28,9 @@
 - Pollinations.ai API
 
 ## 📋 Changelog
+
+### v2.1
+- Fixed image generation: switched API endpoint from `pollinations.ai/p/` to `gen.pollinations.ai/image/` with `model=flux` parameter
 
 ### v2.0
 - Added automatic retry logic — retries up to 3 times on API failure or timeout

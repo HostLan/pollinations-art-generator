@@ -246,7 +246,7 @@
         </div>
 
         <div class="footer">
-            Powered by <a href="https://pollinations.ai" target="_blank">Pollinations.ai</a> &mdash; v2.0
+            Powered by <a href="https://pollinations.ai" target="_blank">Pollinations.ai</a> &mdash; v2.1
         </div>
     </div>
 
@@ -315,8 +315,8 @@
             const encodedPrompt = encodeURIComponent(prompt);
             const timestamp = new Date().getTime();
 
-            // Using simple pollinations.ai endpoint
-            const imageUrl = `https://pollinations.ai/p/${encodedPrompt}?width=1024&height=1024&seed=${timestamp}`;
+            // Using gen.pollinations.ai endpoint with flux model
+            const imageUrl = `https://gen.pollinations.ai/image/${encodedPrompt}?model=flux&width=1024&height=1024&seed=${timestamp}`;
 
             if (attempt === 1) {
                 loadingText.textContent = 'Generating image...';
