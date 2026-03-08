@@ -30,7 +30,9 @@
 ## 📋 Changelog
 
 ### v2.1
-- Fixed image generation: switched API endpoint from `pollinations.ai/p/` to `gen.pollinations.ai/image/` with `model=flux` parameter
+- Fixed image generation: switched API endpoint to the correct `image.pollinations.ai/prompt/{prompt}` URL
+- Added `nologo=true` parameter to remove Pollinations watermark
+- Added optional API key (`token`) support for authenticated requests
 
 ### v2.0
 - Added automatic retry logic — retries up to 3 times on API failure or timeout
