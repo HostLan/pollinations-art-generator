@@ -181,6 +181,30 @@
             color: #667eea;
             text-decoration: none;
         }
+
+        .error-message {
+            display: none;
+            background: #fff3f3;
+            border: 1px solid #f5c6c6;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-top: 15px;
+            color: #c0392b;
+            font-size: 0.95em;
+            text-align: center;
+        }
+
+        .warning-message {
+            display: none;
+            background: #fffbf0;
+            border: 1px solid #f5e6a3;
+            border-radius: 10px;
+            padding: 12px 20px;
+            margin-top: 10px;
+            color: #856404;
+            font-size: 0.9em;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -200,8 +224,11 @@
 
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p>Generating image...</p>
+            <p id="loadingText">Generating image...</p>
         </div>
+
+        <div class="warning-message" id="warningMessage"></div>
+        <div class="error-message" id="errorMessage"></div>
 
         <div class="image-container">
             <img id="generatedImage" alt="Generated Art" />
@@ -219,7 +246,7 @@
         </div>
 
         <div class="footer">
-            Powered by <a href="https://pollinations.ai" target="_blank">Pollinations.ai</a>
+            Powered by <a href="https://pollinations.ai" target="_blank">Pollinations.ai</a> &mdash; v2.0
         </div>
     </div>
 
@@ -228,7 +255,32 @@
         const generateBtn = document.getElementById('generateBtn');
         const randomBtn = document.getElementById('randomBtn');
         const loading = document.getElementById('loading');
+        const loadingText = document.getElementById('loadingText');
         const generatedImage = document.getElementById('generatedImage');
+        const errorMessage = document.getElementById('errorMessage');
+        const warningMessage = document.getElementById('warningMessage');
+
+        const MAX_RETRIES = 3;
+        const RETRY_DELAY_MS = 2000;
+
+        let currentAttemptId = 0;
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        function showWarning(message) {
+            warningMessage.textContent = message;
+            warningMessage.style.display = 'block';
+        }
+
+        function clearMessages() {
+            errorMessage.style.display = 'none';
+            errorMessage.textContent = '';
+            warningMessage.style.display = 'none';
+            warningMessage.textContent = '';
+        }
 
         const randomPrompts = [
             'a serene japanese garden with cherry blossoms',
@@ -245,45 +297,73 @@
 
         function generateImage(prompt) {
             if (!prompt.trim()) {
-                alert('Please enter a description!');
+                showError('Please enter a description!');
                 return;
             }
 
+            clearMessages();
             loading.style.display = 'block';
             generatedImage.style.display = 'none';
             generateBtn.disabled = true;
             randomBtn.disabled = true;
 
+            attemptGeneration(prompt, 1);
+        }
+
+        function attemptGeneration(prompt, attempt) {
+            const attemptId = ++currentAttemptId;
             const encodedPrompt = encodeURIComponent(prompt);
             const timestamp = new Date().getTime();
-            
+
             // Using simple pollinations.ai endpoint
             const imageUrl = `https://pollinations.ai/p/${encodedPrompt}?width=1024&height=1024&seed=${timestamp}`;
-            
+
+            if (attempt === 1) {
+                loadingText.textContent = 'Generating image...';
+            } else {
+                loadingText.textContent = `Retrying... (attempt ${attempt} of ${MAX_RETRIES})`;
+            }
+
             // Add timeout for loading
             const timeout = setTimeout(() => {
-                alert('Image generation is taking too long. Please try again.');
-                loading.style.display = 'none';
-                generateBtn.disabled = false;
-                randomBtn.disabled = false;
+                if (attemptId !== currentAttemptId) return;
+                generatedImage.onload = null;
+                generatedImage.onerror = null;
+                if (attempt < MAX_RETRIES) {
+                    showWarning(`Image generation is taking too long. Retrying (${attempt + 1}/${MAX_RETRIES})...`);
+                    setTimeout(() => attemptGeneration(prompt, attempt + 1), RETRY_DELAY_MS);
+                } else {
+                    loading.style.display = 'none';
+                    generateBtn.disabled = false;
+                    randomBtn.disabled = false;
+                    showError('Image generation is taking too long. Please try again later.');
+                }
             }, 30000); // 30 second timeout
-            
+
             generatedImage.onload = function() {
+                if (attemptId !== currentAttemptId) return;
                 clearTimeout(timeout);
+                clearMessages();
                 loading.style.display = 'none';
                 generatedImage.style.display = 'block';
                 generateBtn.disabled = false;
                 randomBtn.disabled = false;
             };
-            
+
             generatedImage.onerror = function() {
+                if (attemptId !== currentAttemptId) return;
                 clearTimeout(timeout);
-                alert('An error occurred while generating the image. The Pollinations.ai API may be temporarily unavailable. Please try again later.');
-                loading.style.display = 'none';
-                generateBtn.disabled = false;
-                randomBtn.disabled = false;
+                if (attempt < MAX_RETRIES) {
+                    showWarning(`Image generation failed. Retrying (${attempt + 1}/${MAX_RETRIES})...`);
+                    setTimeout(() => attemptGeneration(prompt, attempt + 1), RETRY_DELAY_MS);
+                } else {
+                    loading.style.display = 'none';
+                    generateBtn.disabled = false;
+                    randomBtn.disabled = false;
+                    showError('An error occurred while generating the image. The Pollinations.ai API may be temporarily unavailable. Please try again later.');
+                }
             };
-            
+
             generatedImage.src = imageUrl;
         }
 
